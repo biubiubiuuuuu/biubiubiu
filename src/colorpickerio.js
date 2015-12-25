@@ -1,44 +1,17 @@
 // Inputs.
 // -------
-var CM = new CommentManager(document.getElementById('my-comment-stage'));
+window.CM = new CommentManager(document.getElementById('my-comment-stage'));
 CM.init(); // 初始化
-// 载入弹幕列表
-var danmakuList = [
-  {
-    "mode": 1,
-    "text": "Hello World",
-    "stime": 0,
-    "size": 25,
-    "color": 0xffffff
-  },
-  {
-    "mode": 1,
-    "text": "Hello World2",
-    "stime": 100,
-    "size": 55,
-    "color": 0xffffff
-  }];
-CM.load(danmakuList);
-
-// 插入弹幕
-var someDanmakuAObj = {
-  "mode": 1,
-  "text": "Hello CommentCoreLibrary",
-  "stime": 600,
-  "size": 30,
-  "color": 0xff0000
-};
-CM.insert(someDanmakuAObj);
 
 // 启动播放弹幕（在未启动状态下弹幕不会移动）
 CM.start();
-// CM.startTimer()
+//CM.startTimer();
 
 // 停止播放（停止弹幕移动）
 // CM.stop();
 
 // 更新时间轴时间
-CM.time(600);
+//CM.time(600);
 // CM.time(1000);
 
 
@@ -52,7 +25,9 @@ var username = Math.random();
 var room = 'javis';
 
 pomelo.init({
-  host: '127.0.0.1',
+  host:
+    //'127.0.0.1',
+  'vpca-bpm-family-slardar-1.vm.elenet.me',
   port: 3010,
 }, function () {
   pomelo.request('connector.entryHandler.enter', {username: username, room: room}, function (result) {
@@ -79,9 +54,16 @@ pomelo.init({
     console.log('onComment', msg);
 
     CM.send(msg);
+  });
+
+  pomelo.request('chat.chatHandler.getComment', {}, function (result) {
+
+    CM.load(result);
+    CM.start();
+
+    CM.time(600)
   })
 });
-
 
 
 var iHex = document.getElementById('hex');
