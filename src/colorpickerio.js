@@ -1,5 +1,88 @@
 // Inputs.
 // -------
+var CM = new CommentManager(document.getElementById('my-comment-stage'));
+CM.init(); // 初始化
+// 载入弹幕列表
+var danmakuList = [
+  {
+    "mode": 1,
+    "text": "Hello World",
+    "stime": 0,
+    "size": 25,
+    "color": 0xffffff
+  },
+  {
+    "mode": 1,
+    "text": "Hello World2",
+    "stime": 100,
+    "size": 55,
+    "color": 0xffffff
+  }];
+CM.load(danmakuList);
+
+// 插入弹幕
+var someDanmakuAObj = {
+  "mode": 1,
+  "text": "Hello CommentCoreLibrary",
+  "stime": 600,
+  "size": 30,
+  "color": 0xff0000
+};
+CM.insert(someDanmakuAObj);
+
+// 启动播放弹幕（在未启动状态下弹幕不会移动）
+CM.start();
+// CM.startTimer()
+
+// 停止播放（停止弹幕移动）
+// CM.stop();
+
+// 更新时间轴时间
+CM.time(600);
+// CM.time(1000);
+
+
+window.EventEmitter = require('component-emitter');
+window.Protocol = require('pomelo-protocol');
+window.protobuf = require('pomelo-protobuf');
+
+var pomelo = require('pomelo-jsclient-websocket');
+
+var username = Math.random();
+var room = 'javis';
+
+pomelo.init({
+  host: '127.0.0.1',
+  port: 3010,
+}, function () {
+  pomelo.request('connector.entryHandler.enter', {username: username, room: room}, function (result) {
+    console.log(result);
+  });
+
+  pomelo.on('onUserEnter', function (msg) {
+    console.log('onUserEnter', msg);
+    pomelo.request('chat.chatHandler.getMembers', {}, function (result) {
+      console.log(result);
+    })
+  })
+
+
+  pomelo.on('onUserLeave', function (msg) {
+    console.log('onUserLeave', msg);
+    pomelo.request('chat.chatHandler.getMembers', {}, function (result) {
+      console.log(result);
+    })
+  })
+
+
+  pomelo.on('onComment', function (msg) {
+    console.log('onComment', msg);
+
+    CM.send(msg);
+  })
+});
+
+
 
 var iHex = document.getElementById('hex');
 var iR = document.getElementById('rgb-r');
@@ -57,14 +140,14 @@ function toggleBox() {
 }
 
 function sendComment() {
-  CM.send({
+
+  pomelo.request('chat.chatHandler.comment', {
     "mode": 1,
     "text": textInput.value,
     "stime": 100,
     "size": 55,
     "color": cHex.substr(1, 6)
-  });
-  // TODO:提交服务器
+  })
 }
 
 var cHex = '#ffffff';
@@ -124,6 +207,6 @@ openBtn.onclick = function () {
   toggleBox();
 };
 
-submit.onclick = function() {
+submit.onclick = function () {
   sendComment();
 }

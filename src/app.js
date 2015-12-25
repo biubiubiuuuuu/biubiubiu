@@ -2,27 +2,15 @@
  * Created by Nemo on 15/12/23.
  */
 
-window.EventEmitter = require('component-emitter');
-window.Protocol = require('pomelo-protocol');
-window.protobuf = require('pomelo-protobuf');
+require('script!comment-core-library/build/CommentCoreLibrary.js');
+require('comment-core-library/build/style.css');
 
-var pomelo = require('pomelo-jsclient-websocket');
+require('./colorpicker');
+require('./colorpickerio.js');
 
-pomelo.init({
-  host: '127.0.0.1',
-  port: 3010,
-}, function () {
-  pomelo.request('connector.entryHandler.enter', {username: 'nemo', room: 'javis'}, function (err, result) {
-    console.log(err, result);
-  });
 
-  pomelo.on('onNewUser', function (msg) {
-    console.log(msg);
-  })
-});
 
-//require('script!comment-core-library/build/CommentCoreLibrary.js');
-//require('comment-core-library/build/style.css');
+
 //
 //require('./my-page-styles.css')
 //
