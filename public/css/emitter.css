@@ -1,0 +1,69 @@
+body {
+  width: 100%;
+  min-height: 100%;
+  position: absolute !important;
+}
+textarea:focus, input:focus{
+    outline: 0;
+}
+
+.emitter {
+  width: 500px;
+  height: 45px;
+  padding: 5px 10px;
+  border: 1px solid #666;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 40px;
+  left: calc(50% - 255px);
+}
+
+.emitter .emitter-color {
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border: 1px solid #ccc;
+  display: inline-block;
+  cursor: pointer;
+  float: left;
+}
+
+.emitter .emitter-color-wrap {
+  position: absolute;
+  left: 0;
+  bottom: 65px;
+}
+
+.emitter .emitter-input-wrap {
+  width: 458px;
+  height: 40px;
+  float: left;
+}
+
+.emitter .emitter-input-wrap input {
+  width: calc(100% - 85px);
+  height: 28px;
+  line-height: 40px;
+  padding: 5px 10px;
+  margin-left: 10px;
+  float: left;
+}
+
+.emitter .emitter-input-wrap button {
+  width: 50px;
+  height: 42px;
+  line-height: 40px;
+  border: 1px solid transparent;
+  text-align: center;
+  background-color: #1ab394;
+  border-color: #1ab394;
+  color: #FFF;
+  border-radius:  0 3px 3px 0;
+  font-size: 16px;
+}
+
+.emitter .memitter-input-wrap button:hover {
+  background-color: #18a689;
+  border-color: #18a689;
+  color: #FFFFFF;
+}
