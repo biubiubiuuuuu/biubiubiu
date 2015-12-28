@@ -26,11 +26,14 @@ var room = 'javis';
 
 pomelo.init({
   host:
-    //'127.0.0.1',
-  'vpca-bpm-family-slardar-1.vm.elenet.me',
+  //'127.0.0.1',
+    'vpca-bpm-family-slardar-1.vm.elenet.me',
   port: 3010,
 }, function () {
-  pomelo.request('connector.entryHandler.enter', {username: username, room: room}, function (result) {
+  pomelo.request('connector.entryHandler.enter', {
+    username: username,
+    room: room
+  }, function (result) {
     console.log(result);
   });
 
@@ -77,6 +80,26 @@ var openBtn = document.querySelector('.emitter-color');
 var colorWrap = document.querySelector('.emitter-color-wrap');
 var textInput = document.getElementById('emitter-input');
 var submit = document.getElementById('emitter-submit');
+var emitterText = document.querySelector('.emitter-text-modal');
+var textWrap = document.querySelector('.emitter-text-wrap');
+var textClose = document.querySelector('.emitter-modal-close');
+var textWrapUl = textWrap.getElementsByTagName('ul')[0];
+var textFontsWrap = textWrap.getElementsByClassName('font-wrap')[0];
+var textFonts = textFontsWrap.getElementsByTagName('span');
+var modeBoxes = textWrap.getElementsByClassName('mode-box');
+var showTextBtn = document.querySelector('.emitter-text');
+var overLine = showTextBtn.getElementsByClassName('overline')[0];
+var stage = document.getElementById('my-comment-stage');
+var form = document.getElementById('emitter-form');
+
+stage.style.display = 'block';
+
+var baseConfig = {
+  "mode": 1,
+  "stime": 0,
+  "size": 18,
+  "color": 'ffffff'
+};
 
 var cp = ColorPicker(
   document.getElementById('color-picker'),
@@ -90,6 +113,7 @@ var cp = ColorPicker(
     iV.value = hsv.v;
     openBtn.style.background = hex;
     cHex = hex;
+    baseConfig.color = cHex.substr(1, 6);
   });
 
 function updateInputs(hex) {
@@ -113,23 +137,64 @@ function updateColorPickers(hex) {
 }
 
 function toggleBox() {
-  console.log(colorWrap.style.display)
-  if (!colorWrap.style.display || colorWrap.style.display == 'none') {
-    colorWrap.style.display = 'block';
-  } else {
-    colorWrap.style.display = 'none';
-  }
+  toggle(colorWrap);
+}
+
+function toggleTextBox() {
+  toggle(textWrap);
+}
+
+function closeTextBox() {
+  textWrap.style.display = 'none';
 }
 
 function sendComment() {
+  var comment = clone(baseConfig);
+  comment.text = textInput.value;
+  pomelo.request('chat.chatHandler.comment', comment);
+}
 
-  pomelo.request('chat.chatHandler.comment', {
-    "mode": 1,
-    "text": textInput.value,
-    "stime": 100,
-    "size": 55,
-    "color": cHex.substr(1, 6)
-  })
+function activeModeBox(ele) {
+  removeElementsClass(modeBoxes, 'active');
+  addElementClass(ele, 'active');
+  baseConfig.mode = Number(ele.getAttribute('data-mode'));
+}
+
+function activeFont(ele) {
+  removeElementsClass(textFonts, 'active');
+  addElementClass(ele, 'active');
+  baseConfig.size = Number(ele.getAttribute('data-font'));
+}
+
+function toggleShowComment(ele) {
+  toggle(ele);
+  console.log(stage.style.display);
+  toggle(stage);
+}
+
+function addElementClass(element, className) {
+  element.setAttribute('class', element.getAttribute('class') + ' ' + className);
+}
+
+function removeElementsClass(elements, className) {
+  for (var i = 0; i < elements.length; i++) {
+    var el = elements[i];
+    var oldClass = el.getAttribute('class');
+    var newClass = oldClass.replace(className, '');
+    el.setAttribute('class', newClass);
+  }
+}
+
+function toggle(ele) {
+  if (!ele.style.display || ele.style.display == 'none') {
+    ele.style.display = 'block';
+  } else {
+    ele.style.display = 'none';
+  }
+}
+
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj));
 }
 
 var cHex = '#ffffff';
@@ -185,10 +250,38 @@ iV.onchange = function () {
     v: iV.value
   }));
 }
+
 openBtn.onclick = function () {
   toggleBox();
 };
 
-submit.onclick = function () {
+emitterText.onclick = function () {
+  toggleTextBox();
+}
+
+textClose.onclick = function () {
+  closeTextBox();
+}
+
+textWrapUl.onclick = function (e) {
+  var target = e.target;
+  if (target.getAttribute('class').indexOf('mode-box') > -1) {
+    activeModeBox(target);
+  }
+}
+
+textFontsWrap.onclick = function (e) {
+  var target = e.target;
+  if (target.getAttribute('class').indexOf('fonts') > -1) {
+    activeFont(target);
+  }
+}
+
+showTextBtn.onclick = function () {
+  toggleShowComment(overLine);
+}
+
+form.onsubmit = function (e) {
   sendComment();
+  e.preventDefault();
 }

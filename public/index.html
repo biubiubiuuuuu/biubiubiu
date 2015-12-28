@@ -40,7 +40,57 @@
   <p>这里是body！</p>
   <div id="my-comment-stage" class='container'></div>
   <div class="emitter">
+    <div class="emitter-text">
+      T
+      <span class="overline"></span>
+    </div>
+    <div class="emitter-text-modal">M</div>
     <div class="emitter-color"></div>
+
+    <!-- text-wrap -->
+    <div class="emitter-text-wrap">
+      <div class="emitter-modal">
+        <div class="emitter-modal-title">
+          模式选择
+          <i class="emitter-modal-close">x</i>
+        </div>
+        <div class="emitter-modal-content">
+          <p>弹幕字号</p>
+          <p class="font-wrap">
+            <span class="fonts fz-36 active" title="36" data-font="36">A</span>
+            <span class="fonts fz-45" title="45" data-font="45">A</span>
+          </p>
+          <p>弹幕模式</p>
+          <ul>
+            <li>
+              <span class="mode-box active" data-mode="1">
+                <i class="dashed top-right"></i>
+              </span>
+              <p class="text-center">上端滚动</p>
+            </li>
+            <li>
+              <span class="mode-box" data-mode="2">
+                <i class="dashed bottom-right"></i>
+              </span>
+              <p class="text-center">下端滚动</p>
+            </li>
+            <li>
+              <span class="mode-box" data-mode="5">
+                <i class="dashed top"></i>
+              </span>
+              <p class="text-center">顶部</p>
+            </li>
+            <li class="margin-right-0">
+              <span class="mode-box" data-mode="4">
+                <i class="dashed bottom"></i>
+              </span>
+              <p class="text-center">底部</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- text-wrap end-->
 
     <!-- color-picker -->
     <div class="emitter-color-wrap">
@@ -87,8 +137,10 @@
     <!-- color-picker end -->
 
     <div class="emitter-input-wrap">
-      <input id="emitter-input" type="text">
-      <button id="emitter-submit" type="submit">发送</button>
+      <form id="emitter-form">
+        <input id="emitter-input" type="text">
+        <button id="emitter-submit" type="submit">发送</button>
+      </form>
     </div>
   </div>
   <script src="bundle.js"></script>
