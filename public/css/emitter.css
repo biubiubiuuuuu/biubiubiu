@@ -1,11 +1,22 @@
-body {
+textarea:focus, input:focus {
+  outline: 0;
+}
+
+.abp {
   width: 100%;
   min-height: 100%;
   position: absolute !important;
+  top: 0;
+  left: 0;
 }
 
-textarea:focus, input:focus {
-  outline: 0;
+#biu-comment-stage {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 
 .emitter {
@@ -33,6 +44,7 @@ textarea:focus, input:focus {
   position: absolute;
   left: 0;
   bottom: 65px;
+  display: none;
 }
 
 .emitter .emitter-input-wrap {
@@ -209,6 +221,7 @@ textarea:focus, input:focus {
 .emitter .emitter-text {
   position: relative;
 }
+
 .emitter .overline {
   width: 58px;
   height: 0;

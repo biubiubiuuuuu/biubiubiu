@@ -6,7 +6,9 @@ require('script!comment-core-library/build/CommentCoreLibrary.js');
 require('comment-core-library/build/style.css');
 
 require('./colorpicker');
-require('./colorpickerio.js');
+var biu = require('./biubiubiu');
+biu.init();
+
 
 
 
@@ -27,4 +29,3 @@ require('./colorpickerio.js');
 //CM.start();
 //
 //window.CM = CM;
-
