@@ -28,10 +28,7 @@ module.exports = {
       {
         test: /\.less$/, loader: "style!css!less"
       },
-      {
-        test: /\.html$/,
-        loader: "ng-cache?prefix=[dir]/[dir]"
-      },
+
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
         loaders: [
