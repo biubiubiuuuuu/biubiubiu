@@ -32,15 +32,9 @@
   "homepage": "https://github.com/violet-day/biubiubiu#readme",
   "dependencies": {
     "comment-core-library": "^0.9.2",
-    "component-emitter": "^1.2.0",
-    "dotenv": "^1.2.0",
-    "history": "^1.17.0",
-    "loader-utils": "^0.2.12",
-    "object-assign": "^4.0.1",
+    "component-emitter": "^1.2.0", ,
     "pomelo-jsclient-websocket": "^0.1.1",
     "pomelo-protobuf": "^0.4.0",
-    "pomelo-protocol": "^0.1.6",
-    "react": "^0.14.3",
-    "react-router": "^1.0.3"
+    "pomelo-protocol": "^0.1.6"
   }
 }
