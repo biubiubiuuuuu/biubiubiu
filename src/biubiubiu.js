@@ -27,6 +27,14 @@ var form;
 var cp;
 
 const defaultCommentConfig = require('./defaultCommentConfig');
+const ColorPicker = require('./colorPicker');
+const util = require('./util');
+
+require('script!comment-core-library/build/CommentCoreLibrary.js');
+require('comment-core-library/build/style.css');
+require('./colorpicker.css');
+require('./emitter.css');
+
 
 var Biu = {};
 
@@ -36,7 +44,7 @@ Biu.init = function () {
   addEvents();
   addCommentManager();
 
-  cp = ColorPicker(
+  cp = new ColorPicker(
     document.getElementById('color-picker'),
     function (hex, hsv, rgb) {
       iHex.value = hex;
@@ -61,8 +69,27 @@ Biu.hide = function () {
 };
 
 module.exports = Biu;
-window.Biu = Biu;
 
+/**
+ * 创建template
+ */
+function createDoms() {
+  const template = require('html!./template.html');
+  biuElement = createElement(template);
+  document.body.appendChild(biuElement);
+  util.addElementClass(document.body, 'abp');
+
+  function createElement(string) {
+    var div;
+    div = document.createElement("div");
+    div.innerHTML = string;
+    return div.childNodes[0];
+  }
+}
+
+/**
+ * dom选择器
+ */
 function initParams() {
   iHex = document.getElementById('hex');
   iR = document.getElementById('rgb-r');
@@ -90,15 +117,9 @@ function initParams() {
   stage.style.display = 'block';
 }
 
-function addCommentManager() {
-  window.CM = new CommentManager(document.getElementById('biu-comment-stage'));
-  CM.init(); // 初始化
-
-  // 启动播放弹幕（在未启动状态下弹幕不会移动）
-  CM.start();
-
-}
-
+/**
+ * 注册事件
+ */
 function addEvents() {
   iHex.onchange = function () {
     updateColorPickers(iHex.value);
@@ -150,115 +171,97 @@ function addEvents() {
     }));
   }
 
-  openBtn.onclick = function () {
-    toggleBox();
-  };
+  //颜色选择器
+  openBtn.onclick = Biu.__toggleBox;
 
-  emitterText.onclick = function () {
-    toggleTextBox();
-  }
+  //模式选择
+  emitterText.onclick = Biu.__toggleTextBox;
 
-  textClose.onclick = function () {
-    closeTextBox();
-  }
+  //模式选择关闭
+  textClose.onclick = Biu.__closeTextBox;
 
+  //模式选择,弹幕模式
   textWrapUl.onclick = function (e) {
     var target = e.target;
     if (target.getAttribute('class').indexOf('mode-box') > -1) {
-      activeModeBox(target);
+      Biu.__activeModeBox(target);
     }
-  }
+  };
 
+  //模式选择,字体选择
   textFontsWrap.onclick = function (e) {
     var target = e.target;
     if (target.getAttribute('class').indexOf('fonts') > -1) {
-      activeFont(target);
+      Biu.__activeFont(target);
     }
-  }
+  };
 
   showTextBtn.onclick = function () {
-    toggleShowComment(overLine);
-  }
+    Biu.__toggleShowComment(overLine);
+  };
 
   form.onsubmit = function (e) {
     e.preventDefault();
-    sendComment();
+    Biu.__sendComment();
   }
 }
 
+/**
+ * 启动弹幕发射器
+ */
+function addCommentManager() {
+  window.CM = new CommentManager(document.getElementById('biu-comment-stage'));
+  CM.init(); // 初始化
 
-function createDoms() {
-  const template = require('html!./template.html');
-  biuElement = createElement(template);
-  document.body.appendChild(biuElement);
-  addElementClass(document.body, 'abp');
-}
-
-function createElement(string) {
-  var div;
-  div = document.createElement("div");
-  div.innerHTML = string;
-  return div.childNodes[0];
+  // 启动播放弹幕（在未启动状态下弹幕不会移动）
+  CM.start();
 }
 
 function updateColorPickers(hex) {
   cp.setHex(hex);
 }
 
-function toggleBox() {
-  toggle(colorWrap);
-}
+/**
+ *
+ * @private
+ */
+Biu.__toggleBox = function () {
+  util.toggle(colorWrap);
+};
 
-function toggleTextBox() {
-  toggle(textWrap);
-}
+Biu.__toggleTextBox = function () {
+  util.toggle(textWrap);
+};
 
-function closeTextBox() {
+Biu.__closeTextBox = function () {
   textWrap.style.display = 'none';
-}
+};
 
-function sendComment() {
+Biu.__sendComment = function () {
   var comment = Object.assign(defaultCommentConfig, {text: textInput.value});
   console.log(comment);
   CM.send(comment);
   // TODO: 发送至服务器
-}
-
-function activeModeBox(ele) {
-  removeElementsClass(modeBoxes, 'active');
-  addElementClass(ele, 'active');
+};
+//设置选中的弹幕模式
+Biu.__activeModeBox = function (ele) {
+  util.removeElementsClass(modeBoxes, 'active');
+  util.addElementClass(ele, 'active');
   defaultCommentConfig.mode = Number(ele.getAttribute('data-mode'));
-}
+};
 
-function activeFont(ele) {
-  removeElementsClass(textFonts, 'active');
-  addElementClass(ele, 'active');
+//设置选中的弹幕字体
+Biu.__activeFont = function (ele) {
+  util.removeElementsClass(textFonts, 'active');
+  util.addElementClass(ele, 'active');
   defaultCommentConfig.size = Number(ele.getAttribute('data-font'));
-}
-
-function toggleShowComment(ele) {
-  toggle(ele);
-  console.log(stage.style.display);
-  toggle(stage);
-}
-
-function addElementClass(element, className) {
-  element.setAttribute('class', element.getAttribute('class') + ' ' + className);
-}
-
-function removeElementsClass(elements, className) {
-  for (var i = 0; i < elements.length; i++) {
-    var el = elements[i];
-    var oldClass = el.getAttribute('class');
-    var newClass = oldClass.replace(className, '');
-    el.setAttribute('class', newClass);
-  }
-}
-
-function toggle(ele) {
-  if (!ele.style.display || ele.style.display == 'none') {
-    ele.style.display = 'block';
-  } else {
-    ele.style.display = 'none';
-  }
-}
+};
+/**
+ * 是否显示弹幕 todo:T的切换和弹幕的开关,需要解耦
+ * @param ele
+ * @private
+ */
+Biu.__toggleShowComment = function (ele) {
+  util.toggle(ele);
+  util.toggle(stage);
+};
