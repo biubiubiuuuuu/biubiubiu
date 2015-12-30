@@ -1,0 +1,23 @@
+{
+  "name": "biubiubiu",
+  "version": "0.0.1",
+  "homepage": "https://github.com/facesea/biubiubiu",
+  "authors": [
+    "panda <facesea18@gmail.com>"
+  ],
+  "description": "biubiubiu",
+  "keywords": [
+    "biubiubiu"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "comment-core-library": "~0.9.2"
+  }
+}

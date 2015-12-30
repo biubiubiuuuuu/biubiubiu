@@ -5,7 +5,7 @@ var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src/app.js'),
+  entry: path.resolve(__dirname, 'src/index.js'),
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: "bundle.js"
@@ -28,10 +28,7 @@ module.exports = {
       {
         test: /\.less$/, loader: "style!css!less"
       },
-      {
-        test: /\.html$/,
-        loader: "ng-cache?prefix=[dir]/[dir]"
-      },
+
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
         loaders: [
