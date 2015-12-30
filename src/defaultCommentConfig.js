@@ -4,7 +4,7 @@
 module.exports = {
   "mode": 1,
   "stime": 0,
-  "size": 18,
+  "size": 36,
   "dur": 6000,
   "color": 'ffffff'
 };

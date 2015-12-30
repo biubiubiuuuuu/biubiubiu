@@ -36,6 +36,13 @@ require('./colorpicker.css');
 require('./emitter.css');
 
 
+window.EventEmitter = require('component-emitter');
+window.Protocol = require('pomelo-protocol');
+window.protobuf = require('pomelo-protobuf');
+
+var pomelo = require('pomelo-jsclient-websocket');
+
+
 var Biu = {};
 
 Biu.init = function () {
@@ -43,6 +50,7 @@ Biu.init = function () {
   initParams();
   addEvents();
   addCommentManager();
+  pomeloInit();
 
   cp = new ColorPicker(
     document.getElementById('color-picker'),
@@ -58,6 +66,10 @@ Biu.init = function () {
       defaultCommentConfig.color = hex.substr(1, 6);
     });
   updateColorPickers('#ffffff');
+};
+
+Biu.genRoom = function () {
+  return location.host;
 };
 
 Biu.show = function () {
@@ -217,6 +229,50 @@ function addCommentManager() {
   CM.start();
 }
 
+function pomeloInit() {
+  var username = Math.random();
+  var room = Biu.genRoom();
+
+  pomelo.init({
+    host: //'127.0.0.1',
+      'vpca-bpm-family-slardar-1.vm.elenet.me',
+    port: 3010,
+  }, function () {
+    pomelo.request('connector.entryHandler.enter', {username: username, room: room}, function (result) {
+      console.log(result);
+    });
+
+    pomelo.on('onUserEnter', function (msg) {
+      console.log('onUserEnter', msg);
+      pomelo.request('chat.chatHandler.getMembers', {}, function (result) {
+        console.log(result);
+      })
+    });
+
+    pomelo.on('onUserLeave', function (msg) {
+      console.log('onUserLeave', msg);
+      pomelo.request('chat.chatHandler.getMembers', {}, function (result) {
+        console.log(result);
+      })
+    });
+
+
+    pomelo.on('onComment', function (msg) {
+      console.log('onComment', msg);
+
+      CM.send(msg);
+    });
+
+    pomelo.request('chat.chatHandler.getComment', {}, function (result) {
+      console.log(result);
+      CM.load(result);
+      CM.start();
+
+      CM.time(600)
+    })
+  });
+}
+
 function updateColorPickers(hex) {
   cp.setHex(hex);
 }
@@ -240,8 +296,8 @@ Biu.__closeTextBox = function () {
 Biu.__sendComment = function () {
   var comment = Object.assign(defaultCommentConfig, {text: textInput.value});
   console.log(comment);
-  CM.send(comment);
   // TODO: 发送至服务器
+  pomelo.notify('chat.chatHandler.comment', comment)
 };
 //设置选中的弹幕模式
 Biu.__activeModeBox = function (ele) {
