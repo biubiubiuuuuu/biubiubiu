@@ -3,7 +3,7 @@
   <div class="emitter">
     <div class="emitter-text"> T<span class="overline"></span></div>
     <div class="emitter-text-modal">M</div>
-    <div class="emitter-color"></div>
+    <button id="emitter-color" class="emitter-color jscolor {valueElement:null, styleElement:'emitter-color', onFineChange:'updateColor(this)', closable:true,closeText:'关闭'}"></button>
     <div class="emitter-text-wrap">
       <div class="emitter-modal">
         <div class="emitter-modal-title"> 模式选择<i class="emitter-modal-close">x</i></div>
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div class="emitter-color-wrap">
+    <!-- <div class="emitter-color-wrap">
       <div id="color-picker" class="cp-default"></div>
       <div class="cp-io">
         <ul>
@@ -37,7 +37,7 @@
             <p><label>V</label><input id="hsv-v" type="text"></p></li>
         </ul>
       </div>
-    </div>
+    </div> -->
     <div class="emitter-input-wrap">
       <form id="emitter-form"><input id="emitter-input" type="text">
         <button id="emitter-submit" type="submit">发送</button>

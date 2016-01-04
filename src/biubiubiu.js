@@ -1,13 +1,5 @@
 // doms
 var biuElement;
-var iHex;
-var iR;
-var iG;
-var iB;
-var iH;
-var iS;
-var iV;
-var openBtn;
 var colorWrap;
 var textInput;
 var submit;
@@ -27,12 +19,11 @@ var form;
 var cp;
 
 const defaultCommentConfig = require('./defaultCommentConfig');
-const ColorPicker = require('./colorPicker');
 const util = require('./util');
 
+require('./jscolor.js');
 require('script!comment-core-library/build/CommentCoreLibrary.js');
 require('comment-core-library/build/style.css');
-require('./colorpicker.css');
 require('./emitter.css');
 
 
@@ -51,21 +42,6 @@ Biu.init = function () {
   addEvents();
   addCommentManager();
   pomeloInit();
-
-  cp = new ColorPicker(
-    document.getElementById('color-picker'),
-    function (hex, hsv, rgb) {
-      iHex.value = hex;
-      iR.value = rgb.r;
-      iG.value = rgb.g;
-      iB.value = rgb.b;
-      iH.value = hsv.h;
-      iS.value = hsv.s;
-      iV.value = hsv.v;
-      openBtn.style.background = hex;
-      defaultCommentConfig.color = hex.substr(1, 6);
-    });
-  updateColorPickers('#ffffff');
 };
 
 Biu.genRoom = function () {
@@ -103,16 +79,9 @@ function createDoms() {
  * dom选择器
  */
 function initParams() {
-  iHex = document.getElementById('hex');
-  iR = document.getElementById('rgb-r');
-  iG = document.getElementById('rgb-g');
-  iB = document.getElementById('rgb-b');
-  iH = document.getElementById('hsv-h');
-  iS = document.getElementById('hsv-s');
-  iV = document.getElementById('hsv-v');
-  openBtn = document.querySelector('.emitter-color');
   colorWrap = document.querySelector('.emitter-color-wrap');
   textInput = document.getElementById('emitter-input');
+  openBtn = document.getElementById('emitter-color');
   submit = document.getElementById('emitter-submit');
   emitterText = document.querySelector('.emitter-text-modal');
   textWrap = document.querySelector('.emitter-text-wrap');
@@ -133,58 +102,6 @@ function initParams() {
  * 注册事件
  */
 function addEvents() {
-  iHex.onchange = function () {
-    updateColorPickers(iHex.value);
-  };
-
-  iR.onchange = function () {
-    updateColorPickers(ColorPicker.rgb2hex({
-      r: iR.value,
-      g: iG.value,
-      b: iB.value
-    }));
-  }
-
-  iG.onchange = function () {
-    updateColorPickers(ColorPicker.rgb2hex({
-      r: iR.value,
-      g: iG.value,
-      b: iB.value
-    }));
-  }
-
-  iB.onchange = function () {
-    updateColorPickers(ColorPicker.rgb2hex({
-      r: iR.value,
-      g: iG.value,
-      b: iB.value
-    }));
-  }
-
-  iH.onchange = function () {
-    updateColorPickers(ColorPicker.hsv2hex({
-      h: iH.value,
-      s: iS.value,
-      v: iV.value
-    }));
-  }
-  iS.onchange = function () {
-    updateColorPickers(ColorPicker.hsv2hex({
-      h: iH.value,
-      s: iS.value,
-      v: iV.value
-    }));
-  }
-  iV.onchange = function () {
-    updateColorPickers(ColorPicker.hsv2hex({
-      h: iH.value,
-      s: iS.value,
-      v: iV.value
-    }));
-  }
-
-  //颜色选择器
-  openBtn.onclick = Biu.__toggleBox;
 
   //模式选择
   emitterText.onclick = Biu.__toggleTextBox;
@@ -273,18 +190,15 @@ function pomeloInit() {
   });
 }
 
-function updateColorPickers(hex) {
-  cp.setHex(hex);
+// jscolor 事件监听机制导致该方法只能挂在window下
+window.updateColor = function(picker) {
+  defaultCommentConfig.color = picker.toHEXString().substr(1, 6);
 }
 
 /**
  *
  * @private
  */
-Biu.__toggleBox = function () {
-  util.toggle(colorWrap);
-};
-
 Biu.__toggleTextBox = function () {
   util.toggle(textWrap);
 };
