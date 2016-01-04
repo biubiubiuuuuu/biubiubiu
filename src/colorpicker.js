@@ -63,7 +63,6 @@ function $(el, attrs, children) {
  * Create slide and picker markup depending on the supported technology.
  */
 if (type == 'SVG') {
-
   slide = $('svg', {
     xmlns: 'http://www.w3.org/2000/svg',
     version: '1.1',
